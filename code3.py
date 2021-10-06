@@ -10,11 +10,20 @@ import math
 #b = np.array([[1,1,1],[1,1,1],[1,1,1]], dtype = 'float')
 a = np.random.rand(5,8)
 b = np.random.rand(9,3)
-
+a_list = [a,a]# this stores the list of a matrices
+b_list = [b,b]# this stores the list of b matrices
 err = []
+count = 0
+full_order = np.random.permutation(150)
+training = []
+testing = []
+for f in range(100):# using 100 data points for training
+    training.append(full_order[f])
+for g in range(100,150):# using 50 data points for testing
+    testing.append(full_order[g])
 for epoch in range(200):
-    order = np.random.permutation(150)
-    for i in order:
+    for i in training:
+        count = count + 1
         temp_inp = np.array(q5.data_lst[i])
         #for k in range(1,5):
         #    temp_inp[k] = 1/(1 + np.exp(-temp_inp[k]))
@@ -46,22 +55,24 @@ for epoch in range(200):
         #print(hidden_loc_grad)
         # now to update the weights after every Iterations
         learn = 1
+        alpha = 1
         #first we update the matrix 'a'
         for r in range(5):
             for c in range(8):
-                a[r][c] = a[r][c] + learn*hidden_loc_grad1[c]*temp_inp[r]
+                a[r][c] = a[r][c] + ((a_list[count][r][c] - a_list[count][r][c])*alpha) + learn*hidden_loc_grad1[c]*temp_inp[r]# includes the momentum term
 
         # now we update the matrix 'b'
         for r in range(9):
             for c in range(3):
-                b[r][c] = b[r][c] + learn*output_loc_grad[c]*hidden_activation[r]
-
-#this is to check the performance using the final weights for prediction
+                b[r][c] = b[r][c] + ((b_list[count][r][c] - b_list[count][r][c])*alpha) + learn*output_loc_grad[c]*hidden_activation[r]#includes the momentum term
+        a_list.append(a)
+        b_list.append(b)
+#this is to check the performance using the final weights and the testing data.
 print(a)
 print(b)
-ar = np.random.permutation(150)
+#ar = np.random.permutation(150)
 error = 0
-for i in ar:
+for i in testing:
     temp_inp = np.array(q5.data_lst[i])
     des = np.array(q5.desired[i])
     hidden_output = np.dot(temp_inp,a)#1X8 vector
