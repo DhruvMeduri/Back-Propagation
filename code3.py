@@ -22,7 +22,7 @@ for f in range(100):# using 100 data points for training
     training.append(full_order[f])
 for g in range(100,150):# using 50 data points for testing
     testing.append(full_order[g])
-for epoch in range(500):
+for epoch in range(1000):
     for i in training:
         count = count + 1
         temp_inp = np.array(q5.data_lst[i])
@@ -72,26 +72,27 @@ for epoch in range(500):
 #print(a)
 #print(b)
 #ar = np.random.permutation(150)
-    error = 0
-    for t in testing:
-        temp_inp = np.array(q5.data_lst[t])
-        des = np.array(q5.desired[t])
-        hidden_output = np.dot(temp_inp,a)#1X8 vector
-        #print(temp_inp)
-        #print(hidden_output)
-        #print(hidden_output)
-        hidden_activation = np.array([1,0,0,0,0,0,0,0,0],dtype = 'float')
-        for j in range(1,9):
-            hidden_activation[j] = 1/(1 + np.exp(-hidden_output[j-1]))#1X9 vector(first element is the bias), these serve as inputs for the output layer
-        #print(hidden_activation)
-        output = np.dot(hidden_activation,b)#this is a 1X3 matrix
-        final_output = np.array([0,0,0],dtype = 'float')
-        #print(final_output)
-        for j in range(3):
-            final_output[j] = 1/(1 + np.exp(-output[j])) #1X3 vector, this is the final_output
-        if np.argmax(des) != np.argmax(final_output):
-            error = error + 1
-    err.append(error)
+    if epoch%50 == 0:
+        error = 0
+        for t in testing:
+            temp_inp = np.array(q5.data_lst[t])
+            des = np.array(q5.desired[t])
+            hidden_output = np.dot(temp_inp,a)#1X8 vector
+            #print(temp_inp)
+            #print(hidden_output)
+            #print(hidden_output)
+            hidden_activation = np.array([1,0,0,0,0,0,0,0,0],dtype = 'float')
+            for j in range(1,9):
+                hidden_activation[j] = 1/(1 + np.exp(-hidden_output[j-1]))#1X9 vector(first element is the bias), these serve as inputs for the output layer
+            #print(hidden_activation)
+            output = np.dot(hidden_activation,b)#this is a 1X3 matrix
+            final_output = np.array([0,0,0],dtype = 'float')
+            #print(final_output)
+            for j in range(3):
+                final_output[j] = 1/(1 + np.exp(-output[j])) #1X3 vector, this is the final_output
+            if np.argmax(des) != np.argmax(final_output):
+                error = error + 1
+        err.append(error)
             #err.append(error)
         #print("Error: ",error)
         #print(error)
@@ -119,9 +120,12 @@ for t in testing:
         error = error + 1
 print(error)
 '''
+print(err[19])
 x_list = []
-for i in range(1, 501):
-    x_list.append(i)
+for i in range(1, 1001):
+    if i%50 == 0:
+       x_list.append(i)
+plt.scatter(x_list,err)
 plt.plot(x_list,err)
 plt.xlabel("Iterations")
 plt.ylabel("%error")
