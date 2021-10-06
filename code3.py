@@ -56,16 +56,16 @@ for epoch in range(1000):
         #print(hidden_loc_grad)
         # now to update the weights after every Iterations
         learn = 1
-        alpha = 1
+        alpha = 0.01
         #first we update the matrix 'a'
         for r in range(5):
             for c in range(8):
-                a[r][c] = a[r][c] + ((a_list[count][r][c] - a_list[count][r][c])*alpha) + learn*hidden_loc_grad1[c]*temp_inp[r]# includes the momentum term
+                a[r][c] = a[r][c] + ((a_list[count][r][c] - a_list[count-1][r][c])*alpha) + learn*hidden_loc_grad1[c]*temp_inp[r]# includes the momentum term
 
         # now we update the matrix 'b'
         for r in range(9):
             for c in range(3):
-                b[r][c] = b[r][c] + ((b_list[count][r][c] - b_list[count][r][c])*alpha) + learn*output_loc_grad[c]*hidden_activation[r]#includes the momentum term
+                b[r][c] = b[r][c] + ((b_list[count][r][c] - b_list[count-1][r][c])*alpha) + learn*output_loc_grad[c]*hidden_activation[r]#includes the momentum term
         a_list.append(a)
         b_list.append(b)
 #this is for plotting the error trajectory
